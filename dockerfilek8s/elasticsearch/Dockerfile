@@ -7,7 +7,11 @@ RUN apk upgrade --update-cache; \
     apk add openjdk8-jre; \
     rm -rf /tmp/* /var/cache/apk/*
 
+#CMD ["java", "-version"]
+#https://github.com/pires/docker-jre
 
+#https://github.com/pires/docker-elasticsearch/blob/master/Dockerfile
+# Export HTTP & Transport
 EXPOSE 9200 9300
 
 ENV ES_VERSION 6.0.1
@@ -57,7 +61,8 @@ COPY config /elasticsearch/config
 COPY run.sh /
 
 RUN chown -R elasticsearch:elasticsearch /elasticsearch \
-    && chown elasticsearch:elasticsearch /run.sh
+    && chown elasticsearch:elasticsearch /run.sh \
+	&& chmod +x /run.sh
 
 # Set environment variables defaults
 ENV ES_JAVA_OPTS "-Xms512m -Xmx512m"
@@ -75,6 +80,9 @@ ENV SHARD_ALLOCATION_AWARENESS ""
 ENV SHARD_ALLOCATION_AWARENESS_ATTR ""
 ENV MEMORY_LOCK true
 ENV REPO_LOCATIONS []
+
+ENV DISCOVERY_SERVICE elasticsearch-discovery
+ENV MEMORY_LOCK false
 
 # Volume for Elasticsearch data
 VOLUME ["/data"]
